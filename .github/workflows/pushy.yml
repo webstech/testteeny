@@ -1,0 +1,58 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Check windows info
+
+on:
+  push:
+
+jobs:
+  build:
+
+    strategy:
+      matrix:
+        os: [windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        path: testteeny
+
+    - uses: actions/checkout@v3
+      with:
+        repository: webstech/teenytest
+        path: teenytest
+        ref: win-support
+
+    - name: Check git
+      shell: cmd
+      working-directory: teenytest
+      run: |
+        git config -l --global
+        git config -l --local
+
+    - name: Update files
+      shell: cmd
+      working-directory: teenytest
+      run: |
+        copy /Y ..\testteeny\plugin-configuration-test.js safe\*
+
+    - run: npm ci
+      working-directory: teenytest
+
+    - name: Check files
+      shell: cmd
+      working-directory: teenytest
+      run: |
+        dir bin
+        dir safe
+        rem dir /s
+        where bash
+        node -p process.platform
+        node -p "{const which = require('which');which.sync('bash')}"
+        node ..\testteeny\eggselent.js
+
+    - run: npm test
+      working-directory: teenytest

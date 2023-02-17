@@ -1,0 +1,11 @@
+{
+  "name": "testteeny",
+  "version": "1.0.0",
+  "description": "Test teenytest on windows",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Chris. Webster <chris@webstech.net> (https://www.webstech.com/)",
+  "license": "MIT"
+}
