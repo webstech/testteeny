@@ -22,37 +22,39 @@ jobs:
 
     - uses: actions/checkout@v3
       with:
-        repository: webstech/teenytest
-        path: teenytest
-        ref: win-support
+        repository: webstech/testdouble.js
+        path: testdouble
+        ref: cw/winwin
 
     - name: Check git
       shell: cmd
-      working-directory: teenytest
+      working-directory: testdouble
       run: |
         git config -l --global
         git config -l --local
 
     - name: Update files
       shell: cmd
-      working-directory: teenytest
+      working-directory: testdouble
+      if: ${{ 1 == 0 }}
       run: |
-        copy /Y ..\testteeny\plugin-configuration-test.js safe\*
+        rem copy /Y ..\testteeny\plugin-configuration-test.js safe\*
 
     - run: npm ci
-      working-directory: teenytest
+      working-directory: testdouble
 
     - name: Check files
       shell: cmd
-      working-directory: teenytest
+      working-directory: testdouble
+      if: ${{ 1 == 0 }}
       run: |
         dir bin
         dir safe
         rem dir /s
         where bash
         node -p process.platform
-        node -p "{const which = require('which');which.sync('bash')}"
-        node ..\testteeny\eggselent.js
+        rem node -p "{const which = require('which');which.sync('bash')}"
+        rem node ..\testteeny\eggselent.js
 
     - run: npm test
-      working-directory: teenytest
+      working-directory: testdouble
