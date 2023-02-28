@@ -11,42 +11,55 @@ jobs:
 
     strategy:
       matrix:
-        os: [windows-latest]
+        os: [ubuntu-latest, windows-latest]
 
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
 
     steps:
+    # check out this project
     - uses: actions/checkout@v3
       with:
         path: testteeny
 
+    # checkout project we are playing with
     - uses: actions/checkout@v3
       with:
-        repository: webstech/testdouble.js
-        path: testdouble
-        ref: cw/winwin
+        repository: webstech/semantic-release
+        path: semantic-release
+        ref: t1
+
+    # set git globals
+    - run: git config --global user.name github-actions
+    - run: git config --global user.email github-actions@github.com
 
     - name: Check git
+      if: ${{ 1 == 0 }}
       shell: cmd
-      working-directory: testdouble
+      working-directory: semantic-release
       run: |
         git config -l --global
         git config -l --local
 
     - name: Update files
-      shell: cmd
-      working-directory: testdouble
       if: ${{ 1 == 0 }}
+      shell: cmd
+      working-directory: semantic-release
       run: |
         rem copy /Y ..\testteeny\plugin-configuration-test.js safe\*
 
     - run: npm ci
-      working-directory: testdouble
+      working-directory: semantic-release
+    - run: npm upgrade
+      working-directory: semantic-release
+
+    - run: npm run test:dev
+      working-directory: semantic-release
 
     - name: Check files
-      shell: cmd
-      working-directory: testdouble
       if: ${{ 1 == 0 }}
+      shell: cmd
+      working-directory: semantic-release
       run: |
         dir bin
         dir safe
@@ -57,4 +70,5 @@ jobs:
         rem node ..\testteeny\eggselent.js
 
     - run: npm test
-      working-directory: testdouble
+      if: ${{ 1 == 0 }}
+      working-directory: semantic-release
