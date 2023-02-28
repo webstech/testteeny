@@ -1,0 +1,27 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Check windows info
+
+on:
+  push:
+
+jobs:
+  build:
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+
+    steps:
+    # check out this project
+    - uses: actions/checkout@v3
+      with:
+        path: testteeny
+
+    # docker env
+    - run: docker info
+    - run: docker pull verdaccio/verdaccio:5
