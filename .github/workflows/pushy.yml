@@ -8,11 +8,30 @@ on:
 
 jobs:
   build:
-
+    name: Test CI ${{matrix.name}} (${{matrix.os}})
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
-
+        # os: [ubuntu-latest, windows-latest]
+        node-version:
+          - 18.0.0
+          - 19
+        os:
+          - ubuntu-latest
+          - windows-latest
+        # os: ubuntu-latest
+        # npm-script: dev
+        include:
+          - os: windows-latest
+            name: windows
+            sr-no-test: "!test/integration.test.js"
+            sr-test: "test/**/*.test.js"
+            npm-script: dev
+          - os: ubuntu-latest
+            name: ubuntu
+            npm-script: dev
+          # - name: full-ci
+            # os: ubuntu-latest
+          #  npm-script: ci
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
 
@@ -53,7 +72,7 @@ jobs:
     - run: npm upgrade
       working-directory: semantic-release
 
-    - run: npm run test:dev
+    - run: npm run test:${{matrix.npm-script}} -- ${{matrix.sr-test}} ${{matrix.sr-no-test}}
       working-directory: semantic-release
 
     - name: Check files

@@ -4,7 +4,9 @@
 name: Check windows info
 
 on:
-  push:
+  #push:
+  repository_dispatch:
+    types: [on-demand-test]
 
 jobs:
   build:
